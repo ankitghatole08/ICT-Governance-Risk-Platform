@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EntityRelationship Name="business_unit_cr7db_asset" />
+  <EntityRelationship Name="business_unit_cr7db_ictcontrol" />
+  <EntityRelationship Name="lk_cr7db_asset_createdby" />
+  <EntityRelationship Name="lk_cr7db_asset_modifiedby" />
+  <EntityRelationship Name="lk_cr7db_ictcontrol_createdby" />
+  <EntityRelationship Name="lk_cr7db_ictcontrol_modifiedby" />
+  <EntityRelationship Name="owner_cr7db_asset" />
+  <EntityRelationship Name="owner_cr7db_ictcontrol" />
+  <EntityRelationship Name="team_cr7db_asset" />
+  <EntityRelationship Name="team_cr7db_ictcontrol" />
+  <EntityRelationship Name="user_cr7db_asset" />
+  <EntityRelationship Name="user_cr7db_ictcontrol" />
+</EntityRelationships>

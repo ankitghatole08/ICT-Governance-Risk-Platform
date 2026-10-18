@@ -1,0 +1,31 @@
+asset_id,asset_name,asset_type,business_service,environment,criticality,owner,internet_exposed,data_classification,created_date
+AST-0001,Synthetic Business Application 01,Business Application,Identity Management,Production,Critical,Team-04,True,Public,2026-04-24
+AST-0002,Synthetic Business Application 02,Business Application,Payments,Production,Low,Team-01,True,Public,2026-08-20
+AST-0003,Synthetic Database 03,Database,Payments,Production,Medium,Team-07,True,Restricted,2026-05-17
+AST-0004,Synthetic API 04,API,Payments,Pre-Production,Medium,Team-03,False,Confidential,2026-08-04
+AST-0005,Synthetic Database 05,Database,Customer Management,Production,High,Team-07,True,Confidential,2026-07-18
+AST-0006,Synthetic Virtual Machine 06,Virtual Machine,Payments,Pre-Production,High,Team-02,False,Public,2026-05-26
+AST-0007,Synthetic API 07,API,Data Analytics,Development,Medium,Team-06,True,Public,2026-10-03
+AST-0008,Synthetic Business Application 08,Business Application,Customer Management,Development,High,Team-04,True,Restricted,2026-08-04
+AST-0009,Synthetic Cloud Service 09,Cloud Service,Customer Management,Production,Medium,Team-06,True,Confidential,2026-04-18
+AST-0010,Synthetic Business Application 10,Business Application,Data Analytics,Pre-Production,Medium,Team-04,True,Restricted,2026-07-09
+AST-0011,Synthetic API 11,API,Identity Management,Pre-Production,Low,Team-04,False,Public,2026-08-17
+AST-0012,Synthetic Web Application 12,Web Application,Risk Management,Production,Medium,Team-04,False,Internal,2026-04-30
+AST-0013,Synthetic Cloud Service 13,Cloud Service,Identity Management,Production,High,Team-05,True,Internal,2026-05-24
+AST-0014,Synthetic Virtual Machine 14,Virtual Machine,Data Analytics,Production,High,Team-07,False,Internal,2026-09-09
+AST-0015,Synthetic Virtual Machine 15,Virtual Machine,Payments,Development,High,Team-03,True,Restricted,2026-05-15
+AST-0016,Synthetic Web Application 16,Web Application,Data Analytics,Development,High,Team-05,True,Public,2026-04-23
+AST-0017,Synthetic Virtual Machine 17,Virtual Machine,Identity Management,Production,Medium,Team-05,False,Internal,2026-06-20
+AST-0018,Synthetic Web Application 18,Web Application,Identity Management,Production,Low,Team-03,True,Confidential,2026-05-04
+AST-0019,Synthetic Virtual Machine 19,Virtual Machine,Trading Operations,Production,Medium,Team-03,True,Confidential,2026-06-11
+AST-0020,Synthetic Web Application 20,Web Application,Customer Management,Development,Critical,Team-05,True,Public,2026-08-14
+AST-0021,Synthetic Virtual Machine 21,Virtual Machine,Payments,Pre-Production,Low,Team-02,True,Internal,2026-04-29
+AST-0022,Synthetic Cloud Service 22,Cloud Service,Trading Operations,Production,Low,Team-07,True,Internal,2026-07-27
+AST-0023,Synthetic Cloud Service 23,Cloud Service,Identity Management,Production,Low,Team-08,True,Internal,2026-08-18
+AST-0024,Synthetic Web Application 24,Web Application,Data Analytics,Production,High,Team-04,True,Public,2026-05-06
+AST-0025,Synthetic Web Application 25,Web Application,Payments,Development,High,Team-02,True,Confidential,2026-04-26
+AST-0026,Synthetic Cloud Service 26,Cloud Service,Trading Operations,Pre-Production,High,Team-08,True,Restricted,2026-07-02
+AST-0027,Synthetic Database 27,Database,Identity Management,Production,Critical,Team-07,False,Restricted,2026-10-01
+AST-0028,Synthetic Business Application 28,Business Application,Identity Management,Production,Medium,Team-07,False,Public,2026-08-12
+AST-0029,Synthetic Database 29,Database,Risk Management,Production,High,Team-03,False,Restricted,2026-08-12
+AST-0030,Synthetic Web Application 30,Web Application,Data Analytics,Production,High,Team-01,True,Internal,2026-09-02

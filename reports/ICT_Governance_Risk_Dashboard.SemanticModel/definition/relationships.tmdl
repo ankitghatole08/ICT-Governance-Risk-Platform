@@ -1,0 +1,46 @@
+relationship db3ebcae-4b41-510e-8af7-4221ff7a51bb
+	fromColumn: ict_securityfinding.'Asset Key'
+	toColumn: cr7db_asset.'Asset Key'
+
+relationship f815154d-c92c-5c35-8061-b99fb733e677
+	fromColumn: ict_securityfinding.'Control Key'
+	toColumn: cr7db_ictcontrol.'Control Key'
+
+relationship 8982d4ab-c204-5532-ba5d-03240c7543f3
+	fromColumn: ict_remediationaction.'Finding Key'
+	toColumn: ict_securityfinding.'Finding Key'
+
+relationship 8d296e44-9889-4472-b41a-fc243dbfff8c
+	fromColumn: ict_ictriskassessment.'Finding Business ID'
+	toColumn: ict_securityfinding.'Finding Business ID'
+
+relationship c1570b14-b640-40f4-aef8-96fd4a056a3f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ict_securityfinding.'Due Date'
+	toColumn: LocalDateTable_233bec80-1706-4f4b-8121-f33713efbf40.Date
+
+relationship 37abbcb8-f770-4108-8c13-af865c589fed
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ict_remediationaction.'Due Date'
+	toColumn: LocalDateTable_c71e3be1-5728-4047-a240-75bdd219f5d8.Date
+
+relationship 9621318f-f7f2-486a-b018-bcff26b628b7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ict_remediationaction.'Completed Date'
+	toColumn: LocalDateTable_51ad67b6-911e-4fac-b0ce-a9537048df19.Date
+
+relationship bbe23b59-8707-46e6-9e1e-179cf9404513
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ict_remediationaction.'Due Month'
+	toColumn: LocalDateTable_e33cc59c-da7a-43e1-8c27-0d71de32f751.Date
+
+relationship 2f4b3743-6026-4ac9-8045-54e6b3fcf0f6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ict_ictalert.'Created On'
+	toColumn: LocalDateTable_1925390e-ca1d-4d35-ad83-c67a4610e475.Date
+
+relationship 825f17f8-1112-4646-9ed5-20828ae4bd4f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ict_ictriskassessment.'Assessment Date'
+	toColumn: LocalDateTable_cd8c4546-661f-4a7f-ace8-733cdbbf7c55.Date
+

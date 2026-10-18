@@ -1,0 +1,139 @@
+table ict_ictriskassessment
+	lineageTag: a66387f9-6399-4cbb-9295-d979991df857
+
+	column 'Assessment Title'
+		dataType: string
+		lineageTag: d6e9f7e8-695d-454e-8cbb-c6721c0a5c91
+		summarizeBy: none
+		sourceColumn: Assessment Title
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Finding Business ID'
+		dataType: string
+		lineageTag: 62a3759f-2ded-47ef-b99c-6a1c5e82743e
+		summarizeBy: none
+		sourceColumn: Finding Business ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Risk Score'
+		dataType: int64
+		lineageTag: 57cedc3d-ae76-4511-9648-e7d47784fdd7
+		summarizeBy: sum
+		sourceColumn: Risk Score
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Risk Level'
+		dataType: string
+		lineageTag: 46967d3d-b4c9-4896-b71c-6b9caefd3bf9
+		summarizeBy: none
+		sourceColumn: Risk Level
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Review Priority'
+		dataType: string
+		lineageTag: d1d1e5ea-afbf-40d7-9119-f95bc9175520
+		summarizeBy: none
+		sourceColumn: Review Priority
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Risk Explanation'
+		dataType: string
+		lineageTag: b6c3db6d-206e-427d-9bac-70fa15632316
+		summarizeBy: none
+		sourceColumn: Risk Explanation
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Recommended Action'
+		dataType: string
+		lineageTag: 764d9f70-8e8e-4395-af91-af584f3d1a03
+		summarizeBy: none
+		sourceColumn: Recommended Action
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Assessment Date'
+		dataType: dateTime
+		formatString: dd-MM-yyyy
+		lineageTag: e831629b-e0ba-42cc-98bb-ae347429add6
+		summarizeBy: none
+		sourceColumn: Assessment Date
+
+		variation Variation
+			isDefault
+			relationship: 825f17f8-1112-4646-9ed5-20828ae4bd4f
+			defaultHierarchy: LocalDateTable_cd8c4546-661f-4a7f-ace8-733cdbbf7c55.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Outstanding Action Count'
+		dataType: int64
+		lineageTag: 22e2f9aa-a9f4-4cfa-bc44-05c104f8015d
+		summarizeBy: sum
+		sourceColumn: Outstanding Action Count
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Overdue Action Count'
+		dataType: int64
+		lineageTag: 11daa6f7-9f8c-4828-8542-15cd6961bf6a
+		summarizeBy: sum
+		sourceColumn: Overdue Action Count
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ict_ictriskassessment-partition = m
+		mode: import
+		source =
+				let
+				    // The newly published table may not yet appear in the Dataverse SQL/TDS navigator.
+				    // The Dataverse Web API OData navigator is independent of the TDS table catalog.
+				    Source = OData.Feed("https://org565debe8.crm4.dynamics.com/api/data/v9.2/", null, [Implementation="2.0"]),
+				    Candidates = Table.SelectRows(Source, each Text.Contains(Text.Lower(Text.From([Name])), "ictriskassessment")),
+				    Raw = if Table.RowCount(Candidates) = 1 then Candidates{0}[Data]
+				          else error ("Cannot resolve ICT Risk Assessment in Dataverse OData. Matches=" & Text.From(Table.RowCount(Candidates)) & "; available names=" & Text.Combine(List.Transform(Source[Name], each Text.From(_)), ", ")) ,
+				    Available = Table.ColumnNames(Raw),
+				    Find = (aliases as list, label as text) as text =>
+				        let
+				            Matches = List.Select(aliases, each List.Contains(Available, _, Comparer.OrdinalIgnoreCase)),
+				            Chosen = if List.IsEmpty(Matches) then error ("ICT Risk Assessment is missing column: " & label & ". Available: " & Text.Combine(Available, ", ")) else Matches{0}
+				        in
+				            Chosen,
+				    Cols = {
+				        {Find({"ict_name", "ict_assessmenttitle", "Assessment Title", "Name"}, "Assessment Title"), "Assessment Title"},
+				        {Find({"ict_findingbusinessid", "Finding Business ID"}, "Finding Business ID"), "Finding Business ID"},
+				        {Find({"ict_riskscore", "Risk Score"}, "Risk Score"), "Risk Score"},
+				        {Find({"ict_risklevel", "Risk Level"}, "Risk Level"), "Risk Level"},
+				        {Find({"ict_reviewpriority", "Review Priority"}, "Review Priority"), "Review Priority"},
+				        {Find({"ict_riskexplanation", "Risk Explanation"}, "Risk Explanation"), "Risk Explanation"},
+				        {Find({"ict_recommendedaction", "Recommended Action"}, "Recommended Action"), "Recommended Action"},
+				        {Find({"ict_assessmentdate", "Assessment Date"}, "Assessment Date"), "Assessment Date"},
+				        {Find({"ict_outstandingactioncount", "Outstanding Action Count"}, "Outstanding Action Count"), "Outstanding Action Count"},
+				        {Find({"ict_overdueactioncount", "Overdue Action Count"}, "Overdue Action Count"), "Overdue Action Count"}
+				    },
+				    Selected = Table.SelectColumns(Raw, List.Transform(Cols, each _{0})),
+				    Renamed = Table.RenameColumns(Selected, List.Select(Cols, each _{0} <> _{1})),
+				    Typed = Table.TransformColumnTypes(Renamed, {
+				        {"Assessment Title", type text},
+				        {"Finding Business ID", type text},
+				        {"Risk Score", Int64.Type},
+				        {"Risk Level", type text},
+				        {"Review Priority", type text},
+				        {"Risk Explanation", type text},
+				        {"Recommended Action", type text},
+				        {"Assessment Date", type date},
+				        {"Outstanding Action Count", Int64.Type},
+				        {"Overdue Action Count", Int64.Type}
+				    })
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

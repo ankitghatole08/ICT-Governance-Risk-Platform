@@ -1,23 +1,48 @@
-
-# Python
-__pycache__/
-*.py[cod]
+# Python environment and generated files
 .venv/
 venv/
-.env
-
-# Editors
-.vscode/
-
-# Generated datasets
-data/raw/*.csv
-data/processed/*.csv
-
-# Test and coverage output
+env/
+__pycache__/
+*.py[cod]
 .pytest_cache/
+.mypy_cache/
 .coverage
 htmlcov/
+*.egg-info/
+build/
+dist/
 
-# OS files
+# Local configuration, keys, and token caches
+.env
+.env.*
+!.env.example
+*.secret
+*.secrets
+*token_cache*
+*msal_cache*
+*.pem
+*.pfx
+*.key
+
+# Power BI temporary/cache files (keep .pbip project sources if reviewed)
+**/.pbi/
+*.pbix
+*.pbit
+
+# Logs, editor state, and OS files
+*.log
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
+
+# Generated risk scores; synthetic raw input can be reviewed for inclusion
+/data/processed/
+
+# Archives and local exports - review before committing manually
+*.zip
+
+# Temporary debugging and cleanup outputs
+*.stackdump
+duplicate_cleanup_preview.csv
+data/raw/missing_ict_controls.csv

@@ -1,0 +1,93 @@
+table _Measures
+	lineageTag: 05a2afbe-c619-5943-bf1e-da838540b5d8
+
+	measure 'Total Assets' = COUNTROWS('cr7db_asset')
+		formatString: #,0
+		lineageTag: 54f7e432-e577-5b04-b610-7eac91497a93
+
+	measure 'Total ICT Controls' = COUNTROWS('cr7db_ictcontrol')
+		formatString: #,0
+		lineageTag: 58464995-19c8-591f-9b93-ca1229fd2d6b
+
+	measure 'Total Security Findings' = COUNTROWS('ict_securityfinding')
+		formatString: #,0
+		lineageTag: 104a45da-92e1-54e7-b7c5-5d88621541f3
+
+	measure 'Total Remediation Actions' = COUNTROWS('ict_remediationaction')
+		formatString: #,0
+		lineageTag: 7987dcdd-4531-5d85-86f2-da2ec381f693
+
+	measure 'Total ICT Alerts' = COUNTROWS('ict_ictalert')
+		formatString: #,0
+		lineageTag: e901fe53-082b-5e51-970d-5b3b53db8b94
+
+	measure 'Completed Remediations' = CALCULATE(COUNTROWS('ict_remediationaction'), 'ict_remediationaction'[Status] = "Completed")
+		formatString: #,0
+		lineageTag: 289c8dbf-60e4-53f2-803f-40d12a77d79b
+
+	measure 'Outstanding Remediations' = CALCULATE(COUNTROWS('ict_remediationaction'), 'ict_remediationaction'[Status] <> "Completed")
+		formatString: #,0
+		lineageTag: 444c40f9-b5b0-516b-aa2d-9dcda851ad1e
+
+	measure 'Remediation Completion Rate' = DIVIDE([Completed Remediations], [Total Remediation Actions], 0)
+		formatString: 0.0%
+		lineageTag: 350d1dc6-9431-5aae-abbc-50a2e7484f84
+
+	measure 'Currently Overdue Remediations' = CALCULATE(COUNTROWS('ict_remediationaction'), FILTER('ict_remediationaction', 'ict_remediationaction'[Status] <> "Completed" && NOT(ISBLANK('ict_remediationaction'[Due Date])) && INT('ict_remediationaction'[Due Date]) < TODAY()))
+		formatString: #,0
+		lineageTag: 1c3d0302-c9f0-54c1-b08b-2df162110529
+
+	measure 'Overdue Alerts' = CALCULATE(COUNTROWS('ict_ictalert'), 'ict_ictalert'[Alert Type] = "Overdue Remediation")
+		formatString: #,0
+		lineageTag: e9066397-decf-5431-b3b6-75a3a853a7cc
+
+	measure 'Critical Findings' = CALCULATE(COUNTROWS('ict_securityfinding'), 'ict_securityfinding'[Severity] = "Critical")
+		formatString: #,0
+		lineageTag: 8c5cd8c0-e7ea-50a7-8e02-827c6316c07c
+
+	measure 'Open Findings' = CALCULATE(COUNTROWS('ict_securityfinding'), 'ict_securityfinding'[Status] IN {"Open","In Progress"})
+		formatString: #,0
+		lineageTag: c4ba4cb7-9edc-58c4-bff2-e6224d79d4c6
+
+	measure 'Total Risk Assessments' = COUNTROWS('ict_ictriskassessment')
+		formatString: 0
+		lineageTag: 742dd37a-e0c9-4f13-9967-bbdf280038a7
+
+	measure 'P1 Immediate Reviews' = CALCULATE(COUNTROWS('ict_ictriskassessment'), 'ict_ictriskassessment'[Review Priority] = "P1 - Immediate review")
+		formatString: 0
+		lineageTag: c0e435f2-dd61-4d01-8263-f3ffe32071af
+
+	measure 'Active High Critical Risks' = CALCULATE(COUNTROWS('ict_ictriskassessment'), 'ict_ictriskassessment'[Risk Level] IN {"Critical", "High"}, 'ict_ictriskassessment'[Review Priority] <> "Historical - verify closure")
+		formatString: 0
+		lineageTag: 6f87d384-fda9-46b6-890d-9d1cd61ac755
+
+	measure 'Historical Closure Reviews' = CALCULATE(COUNTROWS('ict_ictriskassessment'), 'ict_ictriskassessment'[Review Priority] = "Historical - verify closure")
+		formatString: 0
+		lineageTag: 9e11cb3e-0b12-4237-8f1b-f88313656a34
+
+	measure 'Assessed Finding Count' = COUNTROWS('ict_ictriskassessment')
+		formatString: 0
+		lineageTag: e17c86f1-5b51-462f-a925-a301be64a92f
+
+	measure 'Total Assessed Overdue Actions' = SUM('ict_ictriskassessment'[Overdue Action Count])
+		formatString: 0
+		lineageTag: 7455e99f-981f-4207-a3e8-654d5c3f2b30
+
+	measure 'Average Risk Score' = AVERAGE('ict_ictriskassessment'[Risk Score])
+		formatString: 0.0
+		lineageTag: ac58ec3d-a81b-41ef-94bf-36482904e6b6
+
+	column Column1
+		dataType: int64
+		isHidden
+		lineageTag: f156b1b0-c0a2-4027-8bd2-924f35bc64b0
+		sourceColumn: Column1
+
+	partition _Measures-partition = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [Column1 = Int64.Type], {{1}})
+				in
+				    Source
+

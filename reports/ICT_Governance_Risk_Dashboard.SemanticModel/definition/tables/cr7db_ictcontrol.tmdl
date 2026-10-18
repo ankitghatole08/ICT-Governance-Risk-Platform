@@ -1,0 +1,64 @@
+table cr7db_ictcontrol
+	lineageTag: d9121536-5796-5076-aa9d-ebb682e99df7
+
+	column 'Control Key'
+		dataType: string
+		lineageTag: 9a170ea6-560b-5c7c-97fd-de574d3341bb
+		summarizeBy: none
+		sourceColumn: Control Key
+
+	column 'Control Business ID'
+		dataType: string
+		lineageTag: ae457594-1715-5e83-acbb-8f018b96761b
+		summarizeBy: none
+		sourceColumn: Control Business ID
+
+	column 'Control Name'
+		dataType: string
+		lineageTag: e7fd2187-3d9f-50a4-a43f-affb32156152
+		summarizeBy: none
+		sourceColumn: Control Name
+
+	column 'Control Domain'
+		dataType: string
+		lineageTag: 66bc821a-4522-54c2-8068-0b4aa322e53d
+		summarizeBy: none
+		sourceColumn: Control Domain
+
+	column 'Control Owner'
+		dataType: string
+		lineageTag: cd8831cb-7ac7-5971-b9ba-f7ec370c5944
+		summarizeBy: none
+		sourceColumn: Control Owner
+
+	column 'Effectiveness Status'
+		dataType: string
+		lineageTag: 219ec2e8-1ab1-5786-8918-7f6dadfd5b68
+		summarizeBy: none
+		sourceColumn: Effectiveness Status
+
+	column Frequency
+		dataType: string
+		lineageTag: 0dc05352-2056-50c9-a5d3-d43fc02cea30
+		summarizeBy: none
+		sourceColumn: Frequency
+
+	partition cr7db_ictcontrol-partition = m
+		mode: import
+		source =
+				let
+				    Source = CommonDataService.Database("org565debe8.crm4.dynamics.com"),
+				    Raw = Source{[Schema="dbo",Item="cr7db_ictcontrol"]}[Data],
+				    Pick = (r as record, names as list) as any => let v = List.RemoveNulls(List.Transform(names, (n) => Record.FieldOrDefault(r,n,null))) in if List.IsEmpty(v) then null else v{0},
+				    Step1 = Table.AddColumn(Raw, "_x1", each let v=Pick(_,{"cr7db_ictcontrolid", "ICT Control"}) in if v=null then null else Text.From(v), type text),
+				    Step2 = Table.AddColumn(Step1, "_x2", each let v=Pick(_,{"Control Business ID", "cr7db_controlbusinessid"}) in if v=null then null else Text.From(v), type text),
+				    Step3 = Table.AddColumn(Step2, "_x3", each let v=Pick(_,{"Control Name", "cr7db_name"}) in if v=null then null else Text.From(v), type text),
+				    Step4 = Table.AddColumn(Step3, "_x4", each let v=Pick(_,{"Control Domain", "cr7db_controldomain"}) in if v=null then null else Text.From(v), type text),
+				    Step5 = Table.AddColumn(Step4, "_x5", each let v=Pick(_,{"Control Owner", "cr7db_controlowner"}) in if v=null then null else Text.From(v), type text),
+				    Step6 = Table.AddColumn(Step5, "_x6", each let v=Pick(_,{"Effectiveness Status", "cr7db_effectivenessstatusname", "cr7db_effectivenessstatus"}) in if v=null then null else Text.From(v), type text),
+				    Step7 = Table.AddColumn(Step6, "_x7", each let v=Pick(_,{"Frequency", "cr7db_frequencyname", "cr7db_frequency"}) in if v=null then null else Text.From(v), type text),
+				    Selected = Table.SelectColumns(Step7, {"_x1", "_x2", "_x3", "_x4", "_x5", "_x6", "_x7"}),
+				    Renamed = Table.RenameColumns(Selected, {{"_x1", "Control Key"}, {"_x2", "Control Business ID"}, {"_x3", "Control Name"}, {"_x4", "Control Domain"}, {"_x5", "Control Owner"}, {"_x6", "Effectiveness Status"}, {"_x7", "Frequency"}})
+				in
+				    Renamed
+

@@ -1,0 +1,29 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-IN
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["cr7db_asset", "cr7db_ictcontrol", "ict_securityfinding", "ict_remediationaction", "ict_ictalert", "ict_ictriskassessment", "_Measures"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table cr7db_asset
+ref table cr7db_ictcontrol
+ref table ict_securityfinding
+ref table ict_remediationaction
+ref table ict_ictalert
+ref table ict_ictriskassessment
+ref table _Measures
+ref table DateTableTemplate_afd7946a-31c7-4032-9f24-aa605217a7eb
+ref table LocalDateTable_233bec80-1706-4f4b-8121-f33713efbf40
+ref table LocalDateTable_c71e3be1-5728-4047-a240-75bdd219f5d8
+ref table LocalDateTable_51ad67b6-911e-4fac-b0ce-a9537048df19
+ref table LocalDateTable_e33cc59c-da7a-43e1-8c27-0d71de32f751
+ref table LocalDateTable_1925390e-ca1d-4d35-ad83-c67a4610e475
+ref table LocalDateTable_cd8c4546-661f-4a7f-ace8-733cdbbf7c55
+

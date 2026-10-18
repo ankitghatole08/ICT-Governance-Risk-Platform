@@ -1,0 +1,78 @@
+table cr7db_asset
+	lineageTag: 05ceba2b-9950-56e1-9d4b-1cb8388b9b1d
+
+	column 'Asset Key'
+		dataType: string
+		lineageTag: 381d3ace-8a65-5acc-9a98-955a6eae357e
+		summarizeBy: none
+		sourceColumn: Asset Key
+
+	column 'Asset Business ID'
+		dataType: string
+		lineageTag: 12abdb55-0ee0-5c6c-9791-b8e9cb0d9a1f
+		summarizeBy: none
+		sourceColumn: Asset Business ID
+
+	column 'Asset Name'
+		dataType: string
+		lineageTag: 7a0f7e34-1d49-5025-a04f-c42bbe0f8a80
+		summarizeBy: none
+		sourceColumn: Asset Name
+
+	column 'Asset Type'
+		dataType: string
+		lineageTag: d28ce5fe-c7e2-5ab9-a4ad-6c9959e173fd
+		summarizeBy: none
+		sourceColumn: Asset Type
+
+	column 'Business Service'
+		dataType: string
+		lineageTag: c4ea91bc-e162-50f1-9017-c23d9eaa6bca
+		summarizeBy: none
+		sourceColumn: Business Service
+
+	column Criticality
+		dataType: string
+		lineageTag: a31192fb-d9c9-585f-aa07-5c74a90f736c
+		summarizeBy: none
+		sourceColumn: Criticality
+
+	column Environment
+		dataType: string
+		lineageTag: 1525769c-5283-5854-9a3f-4ab5f4506355
+		summarizeBy: none
+		sourceColumn: Environment
+
+	column Owner
+		dataType: string
+		lineageTag: fff8f5bc-a051-559d-b933-f0fc74c9b940
+		summarizeBy: none
+		sourceColumn: Owner
+
+	column 'Internet Exposed'
+		dataType: string
+		lineageTag: 3d188321-63bb-5c7e-82f8-2a101da5e282
+		summarizeBy: none
+		sourceColumn: Internet Exposed
+
+	partition cr7db_asset-partition = m
+		mode: import
+		source =
+				let
+				    Source = CommonDataService.Database("org565debe8.crm4.dynamics.com"),
+				    Raw = Source{[Schema="dbo",Item="cr7db_asset"]}[Data],
+				    Pick = (r as record, names as list) as any => let v = List.RemoveNulls(List.Transform(names, (n) => Record.FieldOrDefault(r,n,null))) in if List.IsEmpty(v) then null else v{0},
+				    Step1 = Table.AddColumn(Raw, "_x1", each let v=Pick(_,{"cr7db_assetid", "Asset", "cr7db_asset"}) in if v=null then null else Text.From(v), type text),
+				    Step2 = Table.AddColumn(Step1, "_x2", each let v=Pick(_,{"Asset Business ID", "cr7db_assetbusinessid"}) in if v=null then null else Text.From(v), type text),
+				    Step3 = Table.AddColumn(Step2, "_x3", each let v=Pick(_,{"Asset Name", "cr7db_name"}) in if v=null then null else Text.From(v), type text),
+				    Step4 = Table.AddColumn(Step3, "_x4", each let v=Pick(_,{"Asset Type", "cr7db_assettype"}) in if v=null then null else Text.From(v), type text),
+				    Step5 = Table.AddColumn(Step4, "_x5", each let v=Pick(_,{"Business Service", "cr7db_businessservice"}) in if v=null then null else Text.From(v), type text),
+				    Step6 = Table.AddColumn(Step5, "_x6", each let v=Pick(_,{"Criticality", "cr7db_criticalityname", "cr7db_criticality"}) in if v=null then null else Text.From(v), type text),
+				    Step7 = Table.AddColumn(Step6, "_x7", each let v=Pick(_,{"Environment", "cr7db_environmentname", "cr7db_environment"}) in if v=null then null else Text.From(v), type text),
+				    Step8 = Table.AddColumn(Step7, "_x8", each let v=Pick(_,{"Owner", "cr7db_owner"}) in if v=null then null else Text.From(v), type text),
+				    Step9 = Table.AddColumn(Step8, "_x9", each let v=Pick(_,{"Internet Exposed", "cr7db_internetexposed"}) in if v=null then null else Text.From(v), type text),
+				    Selected = Table.SelectColumns(Step9, {"_x1", "_x2", "_x3", "_x4", "_x5", "_x6", "_x7", "_x8", "_x9"}),
+				    Renamed = Table.RenameColumns(Selected, {{"_x1", "Asset Key"}, {"_x2", "Asset Business ID"}, {"_x3", "Asset Name"}, {"_x4", "Asset Type"}, {"_x5", "Business Service"}, {"_x6", "Criticality"}, {"_x7", "Environment"}, {"_x8", "Owner"}, {"_x9", "Internet Exposed"}})
+				in
+				    Renamed
+

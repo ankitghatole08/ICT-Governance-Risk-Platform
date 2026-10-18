@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "ICT_Governance_Risk_Dashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a0c14974-8c17-568f-b052-6804251c8c22"
+  }
+}

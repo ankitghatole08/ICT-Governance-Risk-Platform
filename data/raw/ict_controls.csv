@@ -1,0 +1,16 @@
+control_id,control_name,control_domain,requirement,control_owner,frequency,effectiveness_status,last_tested_date
+CTL-0001,Access Management Control 01,Access Management,Privileged access must be reviewed periodically.,Governance-Team-4,Monthly,Not Tested,2026-08-23
+CTL-0002,Vulnerability Management Control 02,Vulnerability Management,Security findings must be assessed and remediated within SLA.,Governance-Team-4,Weekly,Effective,2026-09-17
+CTL-0003,Patch Management Control 03,Patch Management,Supported systems must receive security patches.,Governance-Team-4,Monthly,Effective,2026-09-23
+CTL-0004,Logging and Monitoring Control 04,Logging and Monitoring,Critical systems must generate reviewable security logs.,Governance-Team-3,Monthly,Not Tested,2026-08-26
+CTL-0005,Backup and Recovery Control 05,Backup and Recovery,Critical data must have tested recovery arrangements.,Governance-Team-4,Quarterly,Not Tested,2026-09-08
+CTL-0006,Change Management Control 06,Change Management,Material changes must have documented approval.,Governance-Team-2,Monthly,Ineffective,2026-09-25
+CTL-0007,Incident Management Control 07,Incident Management,Security incidents must be recorded and investigated.,Governance-Team-1,Monthly,Effective,2026-09-17
+CTL-0008,Data Protection Control 08,Data Protection,Sensitive data must have appropriate access restrictions.,Governance-Team-3,Quarterly,Effective,2026-07-11
+CTL-0009,Asset Management Control 09,Asset Management,Technology assets must have accountable owners.,Governance-Team-4,Quarterly,Needs Improvement,2026-10-08
+CTL-0010,Third-Party Risk Control 10,Third-Party Risk,Relevant third-party risks must be reviewed.,Governance-Team-1,Annually,Needs Improvement,2026-10-07
+CTL-0011,Access Management Control 11,Access Management,Privileged access must be reviewed periodically.,Governance-Team-1,Monthly,Needs Improvement,2026-10-06
+CTL-0012,Vulnerability Management Control 12,Vulnerability Management,Security findings must be assessed and remediated within SLA.,Governance-Team-1,Weekly,Needs Improvement,2026-08-24
+CTL-0013,Patch Management Control 13,Patch Management,Supported systems must receive security patches.,Governance-Team-1,Monthly,Effective,2026-08-01
+CTL-0014,Logging and Monitoring Control 14,Logging and Monitoring,Critical systems must generate reviewable security logs.,Governance-Team-3,Monthly,Ineffective,2026-08-22
+CTL-0015,Backup and Recovery Control 15,Backup and Recovery,Critical data must have tested recovery arrangements.,Governance-Team-3,Quarterly,Needs Improvement,2026-09-18

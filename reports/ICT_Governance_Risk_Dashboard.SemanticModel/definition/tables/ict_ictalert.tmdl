@@ -1,0 +1,76 @@
+table ict_ictalert
+	lineageTag: 64d25e0e-d2cc-545c-a234-7a1813812ff1
+
+	column 'Alert Key'
+		dataType: string
+		lineageTag: d5e25fef-1a19-5790-b8da-184c60506cf1
+		summarizeBy: none
+		sourceColumn: Alert Key
+
+	column 'Alert Title'
+		dataType: string
+		lineageTag: 756af587-bd17-55cf-ad3c-5390956622ab
+		summarizeBy: none
+		sourceColumn: Alert Title
+
+	column 'Alert Type'
+		dataType: string
+		lineageTag: 6fdde32c-abfa-5e81-8898-393e29615997
+		summarizeBy: none
+		sourceColumn: Alert Type
+
+	column 'Alert Status'
+		dataType: string
+		lineageTag: a38f6422-a86b-5fc4-a674-0a8197906b49
+		summarizeBy: none
+		sourceColumn: Alert Status
+
+	column 'Alert Message'
+		dataType: string
+		lineageTag: 392abc0b-0a7b-5119-bed7-98a046a11d78
+		summarizeBy: none
+		sourceColumn: Alert Message
+
+	column 'Finding Business ID'
+		dataType: string
+		lineageTag: c65928aa-a77e-5bd6-b9d1-9bed44d74d62
+		summarizeBy: none
+		sourceColumn: Finding Business ID
+
+	column 'Remediation Action Business ID'
+		dataType: string
+		lineageTag: ddac9e05-55cf-5844-be5a-aa19eeb9963c
+		summarizeBy: none
+		sourceColumn: Remediation Action Business ID
+
+	column 'Created On'
+		dataType: dateTime
+		lineageTag: 09dea0c5-a2f8-57fb-82dc-0e2556655256
+		summarizeBy: none
+		sourceColumn: Created On
+
+		variation Variation
+			isDefault
+			relationship: 2f4b3743-6026-4ac9-8045-54e6b3fcf0f6
+			defaultHierarchy: LocalDateTable_1925390e-ca1d-4d35-ad83-c67a4610e475.'Date Hierarchy'
+
+	partition ict_ictalert-partition = m
+		mode: import
+		source =
+				let
+				    Source = CommonDataService.Database("org565debe8.crm4.dynamics.com"),
+				    Raw = Source{[Schema="dbo",Item="ict_ictalert"]}[Data],
+				    Pick = (r as record, names as list) as any => let v = List.RemoveNulls(List.Transform(names, (n) => Record.FieldOrDefault(r,n,null))) in if List.IsEmpty(v) then null else v{0},
+				    Step1 = Table.AddColumn(Raw, "_x1", each let v=Pick(_,{"ict_ictalertid"}) in if v=null then null else Text.From(v), type text),
+				    Step2 = Table.AddColumn(Step1, "_x2", each let v=Pick(_,{"Alert Title", "ict_alerttitle"}) in if v=null then null else Text.From(v), type text),
+				    Step3 = Table.AddColumn(Step2, "_x3", each let v=Pick(_,{"Alert Type", "ict_alerttype"}) in if v=null then null else Text.From(v), type text),
+				    Step4 = Table.AddColumn(Step3, "_x4", each let v=Pick(_,{"Alert Status", "ict_alertstatus"}) in if v=null then null else Text.From(v), type text),
+				    Step5 = Table.AddColumn(Step4, "_x5", each let v=Pick(_,{"Alert Message", "ict_alertmessage"}) in if v=null then null else Text.From(v), type text),
+				    Step6 = Table.AddColumn(Step5, "_x6", each let v=Pick(_,{"Finding Business ID", "ict_findingbusinessid"}) in if v=null then null else Text.From(v), type text),
+				    Step7 = Table.AddColumn(Step6, "_x7", each let v=Pick(_,{"Remediation Action Business ID", "ict_remediationactionbusinessid"}) in if v=null then null else Text.From(v), type text),
+				    Step8 = Table.AddColumn(Step7, "_x8", each try DateTime.From(Pick(_,{"Created On", "createdon"})) otherwise null, type nullable datetime),
+				    Selected = Table.SelectColumns(Step8, {"_x1", "_x2", "_x3", "_x4", "_x5", "_x6", "_x7", "_x8"}),
+				    Renamed = Table.RenameColumns(Selected, {{"_x1", "Alert Key"}, {"_x2", "Alert Title"}, {"_x3", "Alert Type"}, {"_x4", "Alert Status"}, {"_x5", "Alert Message"}, {"_x6", "Finding Business ID"}, {"_x7", "Remediation Action Business ID"}, {"_x8", "Created On"}})
+				in
+				    Renamed
+

@@ -1,0 +1,86 @@
+table ict_securityfinding
+	lineageTag: 8cf2372f-2aef-50c6-baca-fba14b479da1
+
+	column 'Finding Key'
+		dataType: string
+		lineageTag: af2a7ef7-1edb-51a2-a350-f2ea690e4d83
+		summarizeBy: none
+		sourceColumn: Finding Key
+
+	column 'Finding Business ID'
+		dataType: string
+		lineageTag: af87ef09-6910-55f1-bde0-2b22b79290d8
+		summarizeBy: none
+		sourceColumn: Finding Business ID
+
+	column Title
+		dataType: string
+		lineageTag: 3f42108c-71dd-5849-9fa1-84abdcd3623b
+		summarizeBy: none
+		sourceColumn: Title
+
+	column Severity
+		dataType: string
+		lineageTag: ecd8ee56-1340-58f2-8092-fd62b2d70127
+		summarizeBy: none
+		sourceColumn: Severity
+
+	column Status
+		dataType: string
+		lineageTag: fe2d807c-402c-5937-a24e-f9be54822848
+		summarizeBy: none
+		sourceColumn: Status
+
+	column 'Due Date'
+		dataType: dateTime
+		formatString: dd-MM-yyyy
+		lineageTag: 3afeb4ba-89a8-526c-a820-b1f3ffaf2450
+		summarizeBy: none
+		sourceColumn: Due Date
+
+		variation Variation
+			isDefault
+			relationship: c1570b14-b640-40f4-aef8-96fd4a056a3f
+			defaultHierarchy: LocalDateTable_233bec80-1706-4f4b-8121-f33713efbf40.'Date Hierarchy'
+
+	column 'Asset Key'
+		dataType: string
+		lineageTag: c566e1aa-88ce-50f5-83ce-f1ef7739c773
+		summarizeBy: none
+		sourceColumn: Asset Key
+
+	column 'Control Key'
+		dataType: string
+		lineageTag: 0843c644-9d03-572b-b25a-d0dd089933de
+		summarizeBy: none
+		sourceColumn: Control Key
+
+	column 'CVSS Score'
+		dataType: double
+		lineageTag: 32c7ac34-494c-5723-aa36-548bdddd889e
+		summarizeBy: sum
+		sourceColumn: CVSS Score
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ict_securityfinding-partition = m
+		mode: import
+		source =
+				let
+				    Source = CommonDataService.Database("org565debe8.crm4.dynamics.com"),
+				    Raw = Source{[Schema="dbo",Item="ict_securityfinding"]}[Data],
+				    Pick = (r as record, names as list) as any => let v = List.RemoveNulls(List.Transform(names, (n) => Record.FieldOrDefault(r,n,null))) in if List.IsEmpty(v) then null else v{0},
+				    Step1 = Table.AddColumn(Raw, "_x1", each let v=Pick(_,{"ict_securityfindingid"}) in if v=null then null else Text.From(v), type text),
+				    Step2 = Table.AddColumn(Step1, "_x2", each let v=Pick(_,{"Finding Business ID", "ict_findingbusinessid"}) in if v=null then null else Text.From(v), type text),
+				    Step3 = Table.AddColumn(Step2, "_x3", each let v=Pick(_,{"Title", "ict_title"}) in if v=null then null else Text.From(v), type text),
+				    Step4 = Table.AddColumn(Step3, "_x4", each let v=Pick(_,{"Severity", "ict_severityname", "ict_severity"}) in if v=null then null else if Text.From(v)="823140000" then "Critical" else if Text.From(v)="823140001" then "High" else if Text.From(v)="823140002" then "Medium" else if Text.From(v)="823140003" then "Low" else Text.From(v), type text),
+				    Step5 = Table.AddColumn(Step4, "_x5", each let v=Pick(_,{"Status 2", "ict_statusname", "ict_status"}) in if v=null then null else Text.From(v), type text),
+				    Step6 = Table.AddColumn(Step5, "_x6", each try DateTime.From(Pick(_,{"Due Date", "ict_duedate"})) otherwise null, type nullable datetime),
+				    Step7 = Table.AddColumn(Step6, "_x7", each let v=Pick(_,{"_ict_asset_value", "ict_asset", "Asset"}) in if v=null then null else Text.From(v), type text),
+				    Step8 = Table.AddColumn(Step7, "_x8", each let v=Pick(_,{"_ict_ictcontrol_value", "ict_ictcontrol", "ICT Control"}) in if v=null then null else Text.From(v), type text),
+				    Step9 = Table.AddColumn(Step8, "_x9", each try Number.From(Pick(_,{"CVSS Score", "ict_cvssscore"})) otherwise null, type nullable number),
+				    Selected = Table.SelectColumns(Step9, {"_x1", "_x2", "_x3", "_x4", "_x5", "_x6", "_x7", "_x8", "_x9"}),
+				    Renamed = Table.RenameColumns(Selected, {{"_x1", "Finding Key"}, {"_x2", "Finding Business ID"}, {"_x3", "Title"}, {"_x4", "Severity"}, {"_x5", "Status"}, {"_x6", "Due Date"}, {"_x7", "Asset Key"}, {"_x8", "Control Key"}, {"_x9", "CVSS Score"}})
+				in
+				    Renamed
+

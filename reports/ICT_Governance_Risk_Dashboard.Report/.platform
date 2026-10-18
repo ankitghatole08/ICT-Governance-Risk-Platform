@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "ICT_Governance_Risk_Dashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "725fdae1-b492-5405-8019-e6b4ea08c0d4"
+  }
+}

@@ -1,0 +1,105 @@
+table ict_remediationaction
+	lineageTag: 6b391307-5a14-5067-a124-d4d02b90cb43
+
+	column 'Action Key'
+		dataType: string
+		lineageTag: d2b99a4f-6e28-5731-8d59-976362a4efa4
+		summarizeBy: none
+		sourceColumn: Action Key
+
+	column 'Action Business ID'
+		dataType: string
+		lineageTag: 091dcfdd-f322-5e5f-b425-d625ee453df2
+		summarizeBy: none
+		sourceColumn: Action Business ID
+
+	column 'Action Title'
+		dataType: string
+		lineageTag: 4ae05e4e-bad7-55a0-81b7-ba8d35e82ee4
+		summarizeBy: none
+		sourceColumn: Action Title
+
+	column 'Assigned To'
+		dataType: string
+		lineageTag: 9ee41c72-f407-5e56-bb8b-e6b82f604cb3
+		summarizeBy: none
+		sourceColumn: Assigned To
+
+	column Priority
+		dataType: string
+		lineageTag: 3de2e69d-d9a2-5d04-879e-82c7c3431810
+		summarizeBy: none
+		sourceColumn: Priority
+
+	column Status
+		dataType: string
+		lineageTag: 0934fe98-daeb-5544-8f40-902b99539448
+		summarizeBy: none
+		sourceColumn: Status
+
+	column 'Due Date'
+		dataType: dateTime
+		formatString: dd-MM-yyyy
+		lineageTag: 1b57732d-f770-5a6c-9206-1af11b515214
+		summarizeBy: none
+		sourceColumn: Due Date
+
+		variation Variation
+			isDefault
+			relationship: 37abbcb8-f770-4108-8c13-af865c589fed
+			defaultHierarchy: LocalDateTable_c71e3be1-5728-4047-a240-75bdd219f5d8.'Date Hierarchy'
+
+	column 'Finding Key'
+		dataType: string
+		lineageTag: dc4b6e51-d929-5d69-a5ab-c06b3122d09f
+		summarizeBy: none
+		sourceColumn: Finding Key
+
+	column 'Completed Date'
+		dataType: dateTime
+		formatString: dd-MM-yyyy
+		lineageTag: 93ce8153-e5e7-5821-b1a6-b9df52aa03e2
+		summarizeBy: none
+		sourceColumn: Completed Date
+
+		variation Variation
+			isDefault
+			relationship: 9621318f-f7f2-486a-b018-bcff26b628b7
+			defaultHierarchy: LocalDateTable_51ad67b6-911e-4fac-b0ce-a9537048df19.'Date Hierarchy'
+
+	column 'Due Month'
+		dataType: dateTime
+		formatString: MMM yyyy
+		lineageTag: 82135266-1dac-5069-9eef-65c758b15fa1
+		summarizeBy: none
+		sourceColumn: Due Month
+
+		variation Variation
+			isDefault
+			relationship: bbe23b59-8707-46e6-9e1e-179cf9404513
+			defaultHierarchy: LocalDateTable_e33cc59c-da7a-43e1-8c27-0d71de32f751.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition ict_remediationaction-partition = m
+		mode: import
+		source =
+				let
+				    Source = CommonDataService.Database("org565debe8.crm4.dynamics.com"),
+				    Raw = Source{[Schema="dbo",Item="ict_remediationaction"]}[Data],
+				    Pick = (r as record, names as list) as any => let v = List.RemoveNulls(List.Transform(names, (n) => Record.FieldOrDefault(r,n,null))) in if List.IsEmpty(v) then null else v{0},
+				    Step1 = Table.AddColumn(Raw, "_x1", each let v=Pick(_,{"ict_remediationactionid", "Remediation Action"}) in if v=null then null else Text.From(v), type text),
+				    Step2 = Table.AddColumn(Step1, "_x2", each let v=Pick(_,{"Action Business ID", "ict_actionbusinessid"}) in if v=null then null else Text.From(v), type text),
+				    Step3 = Table.AddColumn(Step2, "_x3", each let v=Pick(_,{"Action Title", "ict_actiontitle"}) in if v=null then null else Text.From(v), type text),
+				    Step4 = Table.AddColumn(Step3, "_x4", each let v=Pick(_,{"Assigned To", "ict_assignedto"}) in if v=null then null else Text.From(v), type text),
+				    Step5 = Table.AddColumn(Step4, "_x5", each let v=Pick(_,{"Priority", "ict_priorityname", "ict_priority"}) in if v=null then null else if Text.From(v)="823140000" then "Critical" else if Text.From(v)="823140001" then "High" else if Text.From(v)="823140002" then "Medium" else if Text.From(v)="823140003" then "Low" else Text.From(v), type text),
+				    Step6 = Table.AddColumn(Step5, "_x6", each let v=Pick(_,{"Status 2", "ict_statusname", "ict_status"}) in if v=null then null else if Text.From(v)="823140000" then "Open" else if Text.From(v)="823140001" then "In Progress" else if Text.From(v)="823140002" then "Completed" else if Text.From(v)="823140003" then "Blocked" else Text.From(v), type text),
+				    Step7 = Table.AddColumn(Step6, "_x7", each try DateTime.From(Pick(_,{"Due Date", "ict_duedate"})) otherwise null, type nullable datetime),
+				    Step8 = Table.AddColumn(Step7, "_x8", each let v=Pick(_,{"_ict_securityfinding_value", "ict_securityfinding", "Security Finding"}) in if v=null then null else Text.From(v), type text),
+				    Step9 = Table.AddColumn(Step8, "_x9", each try DateTime.From(Pick(_,{"Completed Date", "ict_completeddate"})) otherwise null, type nullable datetime),
+				    Selected = Table.SelectColumns(Step9, {"_x1", "_x2", "_x3", "_x4", "_x5", "_x6", "_x7", "_x8", "_x9"}),
+				    Renamed = Table.RenameColumns(Selected, {{"_x1", "Action Key"}, {"_x2", "Action Business ID"}, {"_x3", "Action Title"}, {"_x4", "Assigned To"}, {"_x5", "Priority"}, {"_x6", "Status"}, {"_x7", "Due Date"}, {"_x8", "Finding Key"}, {"_x9", "Completed Date"}}),
+				    WithDueMonth = Table.AddColumn(Renamed, "Due Month", each if [Due Date] = null then null else Date.StartOfMonth(Date.From([Due Date])), type nullable date)
+				in
+				    WithDueMonth
+
